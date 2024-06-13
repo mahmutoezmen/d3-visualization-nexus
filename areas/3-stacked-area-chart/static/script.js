@@ -1,5 +1,5 @@
 // Load the data
-d3.csv("../stacked-area-chart/data/unemployment.csv", d3.autoType).then(data => {
+d3.csv("../data/unemployment.csv", d3.autoType).then(data => {
   // Specify the chart’s dimensions.
   const width = 928;
   const height = 500;
