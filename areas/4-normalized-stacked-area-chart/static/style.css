@@ -1,0 +1,10 @@
+body {
+  font-family: 'Fira Sans', sans-serif;
+}
+
+#chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
