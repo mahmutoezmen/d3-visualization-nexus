@@ -1,0 +1,22 @@
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.legend {
+  font-family: Arial, sans-serif;
+  font-size: 10px; /* Smaller font size */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px 20px;
+  margin-bottom: 20px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+}
+
+.legend svg {
+  margin-right: 5px;
+}
