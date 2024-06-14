@@ -3,20 +3,24 @@ svg {
   height: auto;
 }
 
+/* for all legend items. It uses CSS Grid to arrange items in rows of 5.*/
 .legend {
   font-family: Arial, sans-serif;
   font-size: 10px; /* Smaller font size */
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px 20px;
-  margin-bottom: 20px;
+  display: grid; /* uses a CSS grid layout. */
+  grid-template-columns: repeat(5, 1fr); /*  legend items are arranged in rows of 5 using CSS grid layout */
+  gap: 10px 20px; /* spacing between grid items ROW GAP (VERTICAL SPACING) ||| COLUMN GAP (HORIZONTAL SPACING) */
+  margin-bottom: 20px; /* adds space below the legend */
 }
 
+/*each individual legend item. Using Flexbox, it ensures that the SVG square and text are aligned correctly*/
+/* Styles each legend item */
 .legend div {
-  display: flex;
-  align-items: center;
+  display: flex; /* uses a flexbox layout */
+  align-items: center; /* aligns items vertically in the center */
 }
 
+ /*adds a margin to the right of the SVG element, ensuring there is space between the square and the text*/
 .legend svg {
   margin-right: 5px;
 }
