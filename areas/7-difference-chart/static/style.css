@@ -1,0 +1,22 @@
+svg {
+  max-width: 100%;
+  height: auto;
+  font: 10px sans-serif;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 10px 20px;
+  margin-bottom: 20px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend svg {
+  margin-right: 5px;
+}
