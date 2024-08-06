@@ -1,0 +1,130 @@
+<html>
+<head>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="iris_data.js"></script>
+  <title>Using D3 Dispatch to Link Charts</title>
+</head>
+<body>
+  <h1>
+    Iris Flower Data: Linked Bar Chart and Scatterplot
+  </h1>
+
+  <p>
+  We have data for 50 flowers of each species. This results in a bar chart with three equal sized bars (each representing
+  50 flowers of one species).  Click on any species bar to see the corresponding data points highlighted in the scatterplot.
+  </p>
+
+  <div style="float:left;">
+    <b>Flower Count by Species</b><br/>
+    <svg id="bar" height="260" width="260"></svg>
+  </div>
+
+  <div>
+    <b>Petal Length vs Petal Width</b><br/>
+    <svg id="scatter" height="260" width="260"></svg>
+  </div>
+
+  <script>
+    class BarChart {
+      constructor(svg_id, data) {
+        this.dispatch = d3.dispatch("selectSpecies");
+
+        let g = d3.select("#"+svg_id).append('g').attr("transform", "translate(30,30)");
+
+        // Calculate counts by species.
+        let species = d3.rollup(data, group => group.length, d => d.species);
+
+        // Create scales.
+        let x = d3.scaleBand().domain(species.keys()).range([0, 200]).paddingInner(0.3).paddingOuter(0.1);
+        let y = d3.scaleLinear().domain([0, d3.max(species.values())]).range([200, 0]);
+
+        // Draw axes.
+        g.append("g")
+          .call(d3.axisLeft(y));
+
+        g.append("g")
+          .attr("transform", "translate(0,200)")
+          .call(d3.axisBottom(x));
+
+        // Draw bars
+        g.selectAll(".bar").data(species).join("rect")
+          .attr("class", "bar")
+          .attr("x", d => x(d[0]))
+          .attr("width", x.bandwidth())
+          .attr("y", d=> y(d[1]))
+          .attr("height", d => y(0)-y(d[1]))
+          .on("click", (event,d) => {
+            console.log("Calling...")
+            this.dispatch.call("selectSpecies", this, d[0])
+          })
+          .style("fill", "red");
+      }
+    }
+
+    class ScatterPlot {
+      constructor(svg_id, data) {
+        this.data = data;
+
+        let g = d3.select("#"+svg_id).append('g').attr("transform", "translate(30,30)");
+
+        let petal_width = data.map(d=>d.petal_width)
+        let petal_length = data.map(d=>d.petal_length)
+
+        let x = d3.scaleLinear().domain([d3.min(petal_width), d3.max(petal_width)]).range([0,200])
+        let y = d3.scaleLinear().domain([d3.min(petal_length), d3.max(petal_length)]).range([200,0])
+
+        // Draw axes
+        g.append("g")
+          .call(d3.axisLeft(y).ticks(5));
+
+        g.append("g")
+          .attr("transform", "translate(0,200)")
+          .call(d3.axisBottom(x).ticks(5));
+
+        // Draw axis labels
+        g.append("text")
+          .attr("x", -20)
+          .attr("y", -10)
+          .attr("text-anchor", "start")
+          .attr("font-size", "8")
+          .text("\u1403 Petal Length");
+
+        g.append("text")
+                .attr("x", 210)
+                .attr("y", 230)
+                .attr("text-anchor", "end")
+                .attr("font-size", "8")
+                .text("Petal Width \u1405");
+
+        // Draw data points.
+        g.selectAll(".dot").data(data).join("circle")
+          .attr("class", "dot")
+          .attr("cx", d => x(d.petal_width))
+          .attr("cy", d => y(d.petal_length))
+          .attr("r", 2)
+          .attr("fill", "black")
+      }
+
+      highlightSpecies(species) {
+        // Get matching data.
+        let matching_data = this.data.filter(d => d.species === species);
+
+        // Select matching circles, turn them red, and bring them to the front.
+        d3.selectAll(".dot").data(matching_data, d=>d.id).join(
+          enter => enter,
+          update => update.attr("fill", "red").raise(),
+          exit => exit.attr("fill", "black")
+        )
+      }
+    }
+
+    // Create the charts
+    let bar = new BarChart("bar", iris_data);
+    let scatter = new ScatterPlot("scatter", iris_data);
+
+    // Register the scatterplot as a listener for selectSpecies events on the bar chart.
+    bar.dispatch.on("selectSpecies", scatter.highlightSpecies.bind(scatter))
+
+  </script>
+</body>
+</html>
